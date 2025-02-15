@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesgoo prettyass</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Bubblegum Sans', cursive;
+      text-align: center;
+      background-color: #f9d8e2;
+      margin: 0;
+      padding: 0;
+    }
+    .heart, .broken-heart {
+      position: absolute;
+      font-size: 30px;
+      cursor: pointer;
+    }
+    .heart {
+      color: red;
+    }
+    .broken-heart {
+      color: gray;
+    }
+    #message {
+      display: none;
+      font-size: 24px;
+      color: #e91e63;
+      margin-top: 20px;
+    }
+    #restart-message {
+      display: none;
+      font-size: 20px;
+      color: #333;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Catch me, will ya?</h1>
+  <div id="game-area"></div>
+  <div id="message"></div>
+  <div id="restart-message">Oops, try being more careful with my heart next time!</div>
+
+  <!-- Audio for Page 1 -->
+  <audio id="audio1" src="audio1.mp3"></audio>
+
+  <script>
+    const gameArea = document.getElementById('game-area');
+    const message = document.getElementById('message');
+    const restartMessage = document.getElementById('restart-message');
+    const audio1 = document.getElementById('audio1');
+    let score = 0;
+    let heartsInterval;
+    let brokenHeartsInterval;
+
+    function startGame() {
+      score = 0;
+      message.style.display = 'none';
+      restartMessage.style.display = 'none';
+      gameArea.innerHTML = ''; // Clear the game area
+      heartsInterval = setInterval(createHeart, 800); // Start creating hearts
+      brokenHeartsInterval = setInterval(createBrokenHeart, 1500); // Start creating broken hearts
+    }
+
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.innerHTML = '❤️';
+      heart.style.left = Math.random() * 90 + 'vw';
+      heart.style.top = Math.random() * 80 + 'vh';
+      heart.addEventListener('click', () => {
+        if (audio1.paused) {
+          audio1.play(); // Play audio on first heart click
+        }
+        score++;
+        heart.remove();
+        if (score >= 20) {
+          window.location.href = 'level2.html'; // Redirect to Level 2
+        }
+      });
+      gameArea.appendChild(heart);
+    }
+
+    function createBrokenHeart() {
+      const brokenHeart = document.createElement('div');
+      brokenHeart.classList.add('broken-heart');
+      brokenHeart.innerHTML = '💔';
+      brokenHeart.style.left = Math.random() * 90 + 'vw';
+      brokenHeart.style.top = Math.random() * 80 + 'vh';
+      brokenHeart.addEventListener('click', () => {
+        restartGame();
+      });
+      gameArea.appendChild(brokenHeart);
+    }
+
+    function restartGame() {
+      clearInterval(heartsInterval);
+      clearInterval(brokenHeartsInterval);
+      gameArea.innerHTML = ''; // Clear the game area
+      restartMessage.style.display = 'block';
+      setTimeout(startGame, 3000); // Restart the game after 3 seconds
+    }
+
+    // Start the game initially
+    startGame();
+  </script>
+</body>
+</html>
